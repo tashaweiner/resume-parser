@@ -46,3 +46,5 @@ In the Azure App:
 
 ### 4. 🗂️ Project Structure
 
+
+api key in zshenv

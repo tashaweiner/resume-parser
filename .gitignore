@@ -1,0 +1,24 @@
+# 🐍 Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+venv/
+
+# 🔐 Secrets
+.env
+
+# 📄 Resume uploads and parsed output
+resumes/
+output/
+
+# 🧪 Test & build artifacts
+dist/
+build/
+*.log
+
+# 🧠 IDE & editor files
+.vscode/
+.DS_Store
+
+# 🐳 Docker/CI artifacts (if needed in the future)
+*.pid
