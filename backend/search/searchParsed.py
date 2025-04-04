@@ -41,7 +41,6 @@ def batch_resumes(resumes, batch_size=10):
         yield resumes[i:i + batch_size]
 
 def parse_gpt_response(response):
-    # Super basic line-splitting parser for GPT's structured response
     candidates = []
     blocks = response.split("---")
     for block in blocks:
@@ -63,33 +62,32 @@ def parse_gpt_response(response):
 
 def search_and_rank(question):
     resumes = load_resumes()
-    print(f"🔍 Scoring {len(resumes)} resumes for relevance...")
-
     results = []
 
     for idx, batch in enumerate(batch_resumes(resumes)):
-        print(f"⚙️ Batch {idx + 1} of {len(resumes)//10 + 1}")
         raw = ask_gpt_to_score(batch, question)
         batch_scores = parse_gpt_response(raw)
         results.extend(batch_scores)
         sleep(1.5)  # avoid rate limit
 
-    # Sort by score (descending)
     sorted_results = sorted(results, key=lambda x: x["score"], reverse=True)
-    return sorted_results
+    return {
+        "query": question,
+        "results": sorted_results
+    }
 
 def print_ranked(results):
     print("\n🏆 Top Candidates by Relevance:\n")
     for i, r in enumerate(results):
         print(f"{i + 1}. {r['filename']} - Score: {r['score']} - {r['reason']}")
 
-# --- Run it ---
+# --- CLI Usage Only ---
 if __name__ == "__main__":
     print("🔍 AI Resume Ranking")
     query = input("What do you want to ask about the resumes?\n> ").strip()
 
     if query:
         final = search_and_rank(query)
-        print_ranked(final)
+        print_ranked(final["results"])
     else:
         print("⚠️ No question asked.")
