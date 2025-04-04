@@ -1,25 +1,34 @@
 #!/bin/bash
 
-echo "🔧 Checking for Homebrew..."
-if ! command -v brew &> /dev/null; then
-  echo "🚨 Homebrew not found. Installing..."
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-else
-  echo "✅ Homebrew is installed."
+echo "🔧 Setting up backend environment..."
+
+# Step 1: Create virtual environment if it doesn't exist
+if [ ! -d "venv" ]; then
+  echo "📁 Creating virtual environment..."
+  python3 -m venv venv
 fi
 
-echo "🐍 Installing Python via Homebrew..."
-brew install python
-
-echo "📁 Creating virtual environment..."
-python3 -m venv venv
-
-echo "✅ Activating virtual environment..."
+# Step 2: Activate virtual environment
 source venv/bin/activate
+echo "✅ Virtual environment activated"
 
-echo "📦 Installing Python dependencies..."
-pip install --upgrade pip
-pip install -r requirements.txt
+# Step 3: Install dependencies
+if [ -f "requirements.txt" ]; then
+  echo "📦 Installing dependencies..."
+  pip install --upgrade pip
+  pip install -r requirements.txt
+else
+  echo "⚠️ No requirements.txt found!"
+fi
 
-echo "🎉 All set! Virtual environment is ready and dependencies installed."
-echo "👉 To activate later, run: source venv/bin/activate"
+# Step 4: Ensure .env exists
+if [ ! -f ".env" ]; then
+  echo "🔐 Creating .env file..."
+  echo "OPENAI_API_KEY=sk-REPLACE_ME" > .env
+  echo "⚠️ Don't forget to replace your OPENAI_API_KEY in the .env file"
+else
+  echo "🔑 .env file already exists"
+fi
+
+echo "🚀 Backend setup complete. Run with:"
+echo "   source venv/bin/activate && uvicorn main:app --reload"

@@ -1,0 +1,19 @@
+.App {
+  font-family: sans-serif;
+  max-width: 800px;
+  margin: auto;
+  padding: 2rem;
+}
+
+input {
+  padding: 0.5rem;
+  margin-right: 0.5rem;
+  width: 300px;
+}
+
+.card {
+  border: 1px solid #ddd;
+  padding: 1rem;
+  margin: 0.5rem 0;
+  border-radius: 6px;
+}

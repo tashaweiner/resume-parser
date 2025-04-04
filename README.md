@@ -1,50 +1,145 @@
-# Resume Parser with OneDrive + OpenAI
+# 📄 Resume Parser & AI Search Tool
 
-This Python project connects to a corporate OneDrive (via Microsoft Graph), downloads PDF resumes, extracts their text, and uses OpenAI to convert them into structured JSON format.
-
----
-
-## 🚀 Features
-
-- Connects to OneDrive using Microsoft Graph API
-- Downloads PDF resumes from a specified folder
-- Extracts text using `pdfplumber`
-- Sends content to OpenAI to generate structured JSON
-- Saves parsed output locally or back to OneDrive (optional)
+A full-stack resume parser and search tool powered by OpenAI. This app helps you convert resumes into structured JSON data and intelligently search and rank them based on any custom query — perfect for daily recruiter use.
 
 ---
 
-## ⚙️ Setup Instructions
+## ✨ Features
 
-### 1. 🔐 Azure App Registration (One-Time)
-
-1. Go to [Azure Portal](https://portal.azure.com)
-2. Search for **"App registrations"** → Click **"New registration"**
-3. Fill in:
-   - Name: `ResumeParserApp`
-   - Supported account types: "Accounts in this organizational directory only"
-   - Redirect URI: leave blank
-4. Click **Register**
-
-### 2. 🔑 Get the following credentials:
-
-- **Client ID**
-- **Tenant ID**
-- **Client Secret** (under "Certificates & secrets")
+- 🧠 Parses PDF resumes into structured JSON using OpenAI (GPT-4 or GPT-3.5)
+- 📁 Automatically skips already-parsed resumes
+- 🔍 Ranks candidates by relevance to a search query (using GPT)
+- 🌐 FastAPI backend with `/resumes` and `/search` endpoints
+- 💻 React frontend to browse and search resumes (in progress)
 
 ---
 
-### 3. 🔒 Set Permissions for Microsoft Graph
+## 📂 Project Structure
 
-In the Azure App:
-- Go to **API permissions** → Add these:
-  - `Files.Read`
-  - `Files.Read.All`
-- Click **"Grant admin consent"**
+```
+resume_parser/
+├── backend/
+│   ├── main.py             # FastAPI app entry
+│   ├── api.py              # API endpoints: /resumes, /search
+│   ├── parser/
+│   │   └── parseFiles.py   # Converts PDFs → JSON using OpenAI
+│   ├── search/
+│   │   └── searchParsed.py # Ranks resumes by relevance using GPT
+│   ├── output/             # Parsed resume JSONs (ignored by Git)
+│   ├── resumes/            # Drop raw PDF resumes here
+│   ├── requirements.txt
+│   └── .env                # Stores your OpenAI API key
+│
+├── frontend/               # React app (in progress)
+│   └── ...
+└── README.md
+```
 
 ---
 
-### 4. 🗂️ Project Structure
+## 🔧 How to Run the Backend
 
+### 📄 1. Set up environment
+```bash
+cd resume_parser/backend
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
 
-api key in zshenv
+### 🔐 2. Set your OpenAI API key
+```bash
+echo "OPENAI_API_KEY=sk-REPLACE_ME" > .env
+```
+
+### 🚀 3. Start the FastAPI server
+Run this from the root of your project:
+```bash
+uvicorn backend.main:app --reload
+```
+
+Visit: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs) to explore API endpoints.
+
+---
+
+## 🔹 How to Use Each File in Backend
+
+### 📁 Parse PDF Resumes to JSON
+```bash
+python backend/parser/parseFiles.py
+```
+- Reads PDFs in `resumes/`
+- Converts to JSON using OpenAI
+- Saves to `output/`
+- Skips files already processed
+
+### 🔍 Search for Relevant Candidates
+```bash
+python backend/search/searchParsed.py
+```
+- Prompts you for a question
+- Uses OpenAI to score resumes for relevance
+- Prints ranked list
+
+---
+
+## 🌐 API Endpoints
+
+### `GET /resumes`
+Returns a list of all parsed resumes.
+
+### `POST /search`
+Send a query in the body:
+```json
+{
+  "question": "Looking for a Python developer with React experience"
+}
+```
+Returns ranked list of matching resumes.
+
+---
+
+## 💻 How to Run the Frontend (React)
+```bash
+cd resume_parser/frontend
+npm install
+npm start
+```
+- Opens at [http://localhost:3000](http://localhost:3000)
+- Will connect to backend at [http://localhost:8000](http://localhost:8000)
+
+---
+
+## 🚀 Coming Soon
+- Resume upload via UI
+- Hybrid AI + keyword search
+- Admin dashboard
+- OneDrive integration (optional)
+
+---
+
+## 🔒 Environment Variables
+In `backend/.env`:
+```
+OPENAI_API_KEY=sk-REPLACE_ME
+```
+
+---
+
+## 📅 .gitignore Suggestions
+```
+backend/output/
+backend/resumes/
+backend/.env
+backend/venv/
+__pycache__/
+```
+
+---
+
+## 🧠 Built With
+- Python + FastAPI (backend)
+- React (frontend)
+- OpenAI (GPT-4 / GPT-3.5)
+- PyMuPDF (PDF parsing)
+```
