@@ -6,8 +6,8 @@ from time import sleep
 
 load_dotenv()
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-parsed_dir = "./output"
-
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+parsed_dir = os.path.join(BASE_DIR, "output")
 def load_resumes():
     all_resumes = []
     for file in os.listdir(parsed_dir):
