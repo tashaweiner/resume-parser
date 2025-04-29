@@ -6,8 +6,10 @@ from time import sleep
 
 load_dotenv()
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 parsed_dir = os.path.join(BASE_DIR, "output")
+
 def load_resumes():
     all_resumes = []
     for file in os.listdir(parsed_dir):
@@ -19,13 +21,13 @@ def load_resumes():
 
 def ask_gpt_to_score(batch, question):
     prompt = (
-        f"You are reviewing candidate resumes in JSON format.\n"
-        f"For each one, score how relevant it is to this question on a scale from 1 (not relevant) to 10 (perfect match).\n"
-        f"Also give a short reason.\n\n"
+        "You are reviewing candidate resumes in JSON format.\n"
+        "For each one, score how relevant it is to this question on a scale from 1 (not relevant) to 10 (perfect match).\n"
+        "Also give a short reason. Respond with one block per resume in the following format:\n\n"
+        "Filename: <name>\nScore: <1-10>\nReason: <short explanation>\n---\n"
+        "If a resume is not relevant, still return it with Score: 1 and a short Reason.\n\n"
         f"Question: {question}\n\n"
-        f"Resumes:\n{json.dumps([r['content'] for r in batch], indent=2)}\n\n"
-        f"Respond in this format:\n"
-        f"Filename: <name>\nScore: <1-10>\nReason: <short text>\n---"
+        f"Resumes:\n{json.dumps([r['content'] for r in batch], indent=2)}"
     )
 
     response = client.chat.completions.create(
@@ -43,21 +45,26 @@ def batch_resumes(resumes, batch_size=10):
 def parse_gpt_response(response):
     candidates = []
     blocks = response.split("---")
+    print(f"🧩 Found {len(blocks)} blocks in GPT response")
+
     for block in blocks:
         lines = block.strip().splitlines()
         data = {"filename": None, "score": 0, "reason": ""}
+
         for line in lines:
             if line.lower().startswith("filename"):
-                data["filename"] = line.split(":")[1].strip()
+                data["filename"] = line.split(":", 1)[1].strip()
             elif line.lower().startswith("score"):
                 try:
-                    data["score"] = int(line.split(":")[1].strip())
+                    data["score"] = int(line.split(":", 1)[1].strip())
                 except:
                     data["score"] = 0
             elif line.lower().startswith("reason"):
                 data["reason"] = line.split(":", 1)[1].strip()
+
         if data["filename"]:
             candidates.append(data)
+
     return candidates
 
 def search_and_rank(question):
@@ -65,23 +72,22 @@ def search_and_rank(question):
     results = []
 
     for idx, batch in enumerate(batch_resumes(resumes)):
+        print(f"🔎 Processing batch {idx + 1} of {(len(resumes) + 9) // 10}")
         raw = ask_gpt_to_score(batch, question)
+        print("🧠 Raw GPT response:\n", raw)
         batch_scores = parse_gpt_response(raw)
         results.extend(batch_scores)
-        sleep(1.5)  # avoid rate limit
+        sleep(1.5)
 
     sorted_results = sorted(results, key=lambda x: x["score"], reverse=True)
-    return {
-        "query": question,
-        "results": sorted_results
-    }
+    return {"query": question, "results": sorted_results}
 
 def print_ranked(results):
     print("\n🏆 Top Candidates by Relevance:\n")
     for i, r in enumerate(results):
         print(f"{i + 1}. {r['filename']} - Score: {r['score']} - {r['reason']}")
 
-# --- CLI Usage Only ---
+# CLI
 if __name__ == "__main__":
     print("🔍 AI Resume Ranking")
     query = input("What do you want to ask about the resumes?\n> ").strip()

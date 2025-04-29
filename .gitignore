@@ -22,3 +22,7 @@ build/
 
 # 🐳 Docker/CI artifacts (if needed in the future)
 *.pid
+
+
+# 🗝️ Auth token cache (MSAL)
+token_cache.bin
