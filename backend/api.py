@@ -2,6 +2,7 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from search.searchParsed import search_and_rank
+from parser.parseFiles import parse_resumes  # adjust import path if needed
 from fastapi import APIRouter, Query
 import os
 import json
@@ -38,3 +39,8 @@ def get_all_resumes():
                 data = json.load(f)
                 resumes.append({"filename": filename, "content": data})
     return resumes
+
+@router.post("/refresh")
+def refresh_resumes():
+    parse_resumes()
+    return {"message": "Resumes refreshed"}

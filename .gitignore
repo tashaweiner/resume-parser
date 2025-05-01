@@ -10,7 +10,6 @@ venv/
 # 📄 Resume uploads and parsed output
 resumes/
 output/
-
 # 🧪 Test & build artifacts
 dist/
 build/

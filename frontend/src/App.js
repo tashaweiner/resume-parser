@@ -24,18 +24,27 @@ function App() {
 
   const handleSearch = () => {
     if (!searchQuery.trim()) return;
-
+  
     setLoading(true);
     setError(null);
     setResults([]);
-
-    axios.get(`${API_URL}/search?query=${encodeURIComponent(searchQuery)}`)
-      .then(res => setResults(res.data.results))
+  
+    // Step 1: Trigger refresh on backend to parse any new resumes
+    axios.post(`${API_URL}/refresh`)
+      .then(() => {
+        // Step 2: After refresh, search using the updated resume list
+        return axios.get(`${API_URL}/search?query=${encodeURIComponent(searchQuery)}`);
+      })
+      .then(res => {
+        setResults(res.data.results);
+      })
       .catch(err => {
-        console.error("Error searching:", err);
+        console.error("Error during search:", err);
         setError("Search failed.");
       })
-      .finally(() => setLoading(false));
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   return (

@@ -1,0 +1,54 @@
+{
+  "name": "Cole M. Reynolds",
+  "phone": "256.565.2929",
+  "email": "colemreynolds4@outlook.com",
+  "education": [
+    {
+      "school": "The University of Alabama \u2013 The Culverhouse College of Business",
+      "degree": "Bachelor of Science in Commerce & Business Administration",
+      "field": "Accounting",
+      "dates": "May 2024"
+    }
+  ],
+  "experience": [
+    {
+      "title": "Equities Analyst Program",
+      "company": "Millennium Management",
+      "location": "New York, NY",
+      "dates": "July 2024 \u2013 Present",
+      "responsibilities": [
+        "Fundamental equities program consisting of two training rotations prior to being placed on a team"
+      ]
+    },
+    {
+      "title": "Research Intern",
+      "company": "Ashton Capital",
+      "location": "Southlake, TX",
+      "dates": "March 2024 \u2013 April 2024",
+      "responsibilities": [
+        "Worked under portfolio manager Zeke Ashton, who previously ran Centaur Capital Partners, to construct an industry primer and research actionable ideas"
+      ]
+    },
+    {
+      "title": "Equity Research Summer Associate",
+      "company": "Jefferies Group",
+      "location": "New York, NY",
+      "dates": "June 2023 \u2013 August 2023",
+      "responsibilities": [
+        "Summer associate under senior Sheila Kahyaoglu\u2019s team that covers aerospace, defense, & airlines",
+        "Assisted team in initiating coverage, publishing recurring weekly notes, updating 550+ page comprehensive marketing deck, industry notes, and more ad hoc projects"
+      ]
+    },
+    {
+      "title": "Research Intern",
+      "company": "Vulcan Value Partners",
+      "location": "Birmingham, AL",
+      "dates": "May 2022 \u2013 August 2022",
+      "responsibilities": [
+        "Summer research intern at $12 B value-oriented long-only investment fund founded by C.T. Fitzpatrick, analyzing comps transactions and six potential companies for the fund\u2019s MVP list",
+        "Worked directly with the research team to assess and present potential investment ideas"
+      ]
+    }
+  ],
+  "certifications": []
+}
