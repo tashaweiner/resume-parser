@@ -1,9 +1,8 @@
 # backend/api.py
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-from backend.search.searchParsed import search_and_rank
+from search.searchParsed import search_and_rank
 from fastapi import APIRouter, Query
-from backend.search.searchParsed import search_and_rank
 import os
 import json
 
