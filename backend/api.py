@@ -1,6 +1,7 @@
 # backend/api.py
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
+from onedrive.download_resumes import download_resumes  # adjust import path if needed
 from search.searchParsed import search_and_rank
 from parser.parseFiles import parse_resumes  # adjust import path if needed
 from fastapi import APIRouter, Query
@@ -42,5 +43,6 @@ def get_all_resumes():
 
 @router.post("/refresh")
 def refresh_resumes():
+    download_resumes()    # <-- first pull new PDFs
     parse_resumes()
     return {"message": "Resumes refreshed"}
