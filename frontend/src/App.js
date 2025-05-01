@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+console.log("API URL:", process.env.REACT_APP_API_URL);
+
+
+const API_URL = process.env.REACT_APP_API_URL;
 
 function App() {
   const [allResumes, setAllResumes] = useState([]);
@@ -10,7 +14,7 @@ function App() {
 
   // Fetch all parsed resumes on mount
   useEffect(() => {
-    axios.get("http://localhost:8000/resumes")
+    axios.get(`${API_URL}/resumes`)
       .then(res => setAllResumes(res.data))
       .catch(err => {
         console.error("Error fetching resumes:", err);
@@ -25,7 +29,7 @@ function App() {
     setError(null);
     setResults([]);
 
-    axios.get(`http://localhost:8000/search?query=${searchQuery}`)
+    axios.get(`${API_URL}/search?query=${encodeURIComponent(searchQuery)}`)
       .then(res => setResults(res.data.results))
       .catch(err => {
         console.error("Error searching:", err);
