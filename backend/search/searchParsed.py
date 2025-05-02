@@ -3,21 +3,21 @@ import json
 from openai import OpenAI
 from dotenv import load_dotenv
 from time import sleep
-
+from dbconnection import load_resume_from_db
 load_dotenv()
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 parsed_dir = os.path.join(BASE_DIR, "output")
 
-def load_resumes():
-    all_resumes = []
-    for file in os.listdir(parsed_dir):
-        if file.endswith(".json"):
-            with open(os.path.join(parsed_dir, file), "r") as f:
-                data = json.load(f)
-                all_resumes.append({"filename": file, "content": data})
-    return all_resumes
+# def load_resumes():
+#     all_resumes = []
+#     for file in os.listdir(parsed_dir):
+#         if file.endswith(".json"):
+#             with open(os.path.join(parsed_dir, file), "r") as f:
+#                 data = json.load(f)
+#                 all_resumes.append({"filename": file, "content": data})
+#     return all_resumes
 
 def ask_gpt_to_score(batch, question):
     prompt = (
@@ -68,7 +68,7 @@ def parse_gpt_response(response):
     return candidates
 
 def search_and_rank(question):
-    resumes = load_resumes()
+    resumes = load_resume_from_db()
     results = []
 
     for idx, batch in enumerate(batch_resumes(resumes)):
