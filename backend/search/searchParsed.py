@@ -79,9 +79,8 @@ def search_and_rank(question):
         results.extend(batch_scores)
         sleep(1.5)
 
-    sorted_results = sorted(results, key=lambda x: x["score"], reverse=True)
-    return {"query": question, "results": sorted_results}
-
+    sorted_results = sorted(results, key=lambda x: int(x["score"]), reverse=True)
+    return sorted_results  # ← ✅ FIXED: return the list directly
 def print_ranked(results):
     print("\n🏆 Top Candidates by Relevance:\n")
     for i, r in enumerate(results):
@@ -94,6 +93,7 @@ if __name__ == "__main__":
 
     if query:
         final = search_and_rank(query)
-        print_ranked(final["results"])
-    else:
-        print("⚠️ No question asked.")
+        if isinstance(final, dict) and "results" in final:
+            print_ranked(final["results"])
+        else:
+            print("⚠️ GPT output was not in the expected format:", final)

@@ -6,6 +6,7 @@ venv/
 
 # 🔐 Secrets
 .env
+.venv/
 
 # 📄 Resume uploads and parsed output
 resumes/
