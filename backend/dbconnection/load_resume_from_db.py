@@ -1,8 +1,9 @@
-import psycopg2
-import os
 from dotenv import load_dotenv
 
 load_dotenv()
+import psycopg2
+import os
+
 
 def load_resumes_from_db():
     conn = psycopg2.connect(

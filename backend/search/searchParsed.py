@@ -1,10 +1,11 @@
+from dotenv import load_dotenv
+load_dotenv()
 import os
 import json
 from openai import OpenAI
-from dotenv import load_dotenv
 from time import sleep
-from dbconnection import load_resume_from_db
-load_dotenv()
+from dbconnection.load_resume_from_db import load_resume_from_db
+
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
