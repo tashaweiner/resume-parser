@@ -6,7 +6,6 @@ from fastapi import APIRouter, HTTPException
 import psycopg2
 from pydantic import BaseModel
 from search.searchParsed import search_and_rank
-from parser.parseFiles import parse_resumes  # adjust import path if needed
 from fastapi import APIRouter, Query
 import os
 import json
