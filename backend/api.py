@@ -2,13 +2,12 @@
 from dotenv import load_dotenv
 # Load environment variables
 load_dotenv()
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter
 import psycopg2
 from pydantic import BaseModel
 from search.searchParsed import search_and_rank
 from fastapi import APIRouter, Query
 import os
-import json
 
 router = APIRouter()
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
