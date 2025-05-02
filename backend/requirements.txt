@@ -19,4 +19,5 @@ typing-inspection==0.4.0
 typing_extensions==4.13.1
 uvicorn[standard]
 fastapi
+msal==1.27.0
 requests==2.31.0
