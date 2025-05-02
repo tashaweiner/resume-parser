@@ -12,7 +12,8 @@ app.include_router(api_router)
 # Allow requests from frontend (adjust if deploying elsewhere)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # or ["*"] during development
+    allow_origins=["http://localhost:3000","https://resume-parser-peach.vercel.app"
+],  # or ["*"] during development
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
