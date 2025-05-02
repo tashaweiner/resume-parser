@@ -5,7 +5,7 @@ import psycopg2
 import os
 
 
-def load_resumes_from_db():
+def load_resume_from_db():
     conn = psycopg2.connect(
         host=os.getenv("POSTGRES_HOST"),
         port=os.getenv("POSTGRES_PORT"),
