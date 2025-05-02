@@ -10,5 +10,12 @@ def parse_resume_pdf_bytes(file_bytes: bytes):
     3. Return structured resume data
     """
     text = extract_text_from_pdf_bytes(file_bytes)
-    structured_data = convert_text_to_structured_json(text)
+    try:
+        structured_data = convert_text_to_structured_json(text)
+    except Exception as e:
+        print("⚠️ Error parsing resume:", e)
+        structured_data = {
+            "error": "Failed to parse resume",
+            "details": str(e)
+        }
     return structured_data

@@ -26,5 +26,7 @@ def convert_text_to_structured_json(resume_text: str):
     try:
         return json.loads(content)
     except json.JSONDecodeError:
+        # If the response is not valid JSON, log the error and return the raw content
         print("⚠️ OpenAI response was not valid JSON.")
+        print("Response content:", content)
         return content

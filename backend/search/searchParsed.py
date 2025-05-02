@@ -11,15 +11,6 @@ client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 parsed_dir = os.path.join(BASE_DIR, "output")
 
-# def load_resumes():
-#     all_resumes = []
-#     for file in os.listdir(parsed_dir):
-#         if file.endswith(".json"):
-#             with open(os.path.join(parsed_dir, file), "r") as f:
-#                 data = json.load(f)
-#                 all_resumes.append({"filename": file, "content": data})
-#     return all_resumes
-
 def ask_gpt_to_score(batch, question):
     prompt = (
         "You are reviewing candidate resumes in JSON format.\n"
