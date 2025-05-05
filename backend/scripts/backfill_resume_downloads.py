@@ -12,9 +12,9 @@ from ..dbconnection.insert import insert_parsed_resume
 
 load_dotenv()
 
-MAX_CONCURRENT = 5  # Limit to avoid hitting rate limits
+MAX_CONCURRENT = 5
 
-async def is_resume_already_in_db_async(filename: str) -> bool:
+async def get_existing_filenames() -> set:
     conn = await asyncpg.connect(
         host=os.getenv("POSTGRES_HOST"),
         port=os.getenv("POSTGRES_PORT", 5432),
@@ -22,42 +22,46 @@ async def is_resume_already_in_db_async(filename: str) -> bool:
         user=os.getenv("POSTGRES_USER"),
         password=os.getenv("POSTGRES_PASSWORD")
     )
-    row = await conn.fetchrow("SELECT 1 FROM resumes WHERE filename = $1", filename)
+    rows = await conn.fetch("SELECT filename FROM resumes")
     await conn.close()
-    return row is not None
+    return set(row["filename"] for row in rows)
 
 async def fetch_resume_file(session, url):
     async with session.get(url) as resp:
         resp.raise_for_status()
         return await resp.read()
 
-async def process_file(session, file):
+async def process_file(session, file, existing_filenames: set):
     filename = file["name"]
 
     if not filename.endswith(".pdf"):
         return
 
-    if await is_resume_already_in_db_async(filename):
+    if filename in existing_filenames:
         print(f"⏭️ Already parsed: {filename}")
         return
 
     print(f"⬇️ Downloading: {filename}")
     download_url = file["@microsoft.graph.downloadUrl"]
-    file_bytes = await fetch_resume_file(session, download_url)
+    try:
+        file_bytes = await fetch_resume_file(session, download_url)
+        parsed_candidate_data = parse_resume_pdf_bytes(file_bytes)
 
-    parsed_candidate_data = parse_resume_pdf_bytes(file_bytes)
+        if not isinstance(parsed_candidate_data, Candidate):
+            print(f"❌ Failed to parse: {filename}")
+            print("Details:", parsed_candidate_data.get("details"))
+            return
 
-    if isinstance(parsed_candidate_data, Candidate):
         print(f"📝 Parsed: {filename}")
-
         flattened_text = flatten_candidate_for_embedding(parsed_candidate_data)
         parsed_candidate_data.embedding = get_embedding(flattened_text)
 
         insert_parsed_resume(filename, parsed_candidate_data)
+        existing_filenames.add(filename)  # update the set after success
         print(f"✅ Inserted into DB: {filename}")
-    else:
-        print(f"❌ Failed to parse: {filename}")
-        print("Details:", parsed_candidate_data.get("details"))
+
+    except Exception as e:
+        print(f"⚠️ Error processing {filename}: {e}")
 
 async def download_and_parse_all():
     access_token = get_access_token()
@@ -76,14 +80,12 @@ async def download_and_parse_all():
 
         print(f"📁 Found {len(files)} items in the Resumes folder")
 
+        existing_filenames = await get_existing_filenames()
         sem = asyncio.Semaphore(MAX_CONCURRENT)
 
         async def safe_process(file):
             async with sem:
-                try:
-                    await process_file(session, file)
-                except Exception as e:
-                    print(f"⚠️ Error processing {file['name']}: {e}")
+                await process_file(session, file, existing_filenames)
 
         await asyncio.gather(*(safe_process(f) for f in files))
 

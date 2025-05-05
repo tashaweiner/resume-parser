@@ -4,7 +4,7 @@
 # run-backend:
 # 	cd backend && PYTHONPATH=.. source venv/bin/activate && uvicorn main:app --reload
 run-backend:
-	venv/bin/python -m uvicorn backend.main:app --reload
+	PYTHONPATH=. venv/bin/python -m uvicorn backend.main:app --reload
 
 # Setup backend (runs setup.sh)
 setup-backend:
@@ -27,6 +27,6 @@ fetch-resumes:
 # Authenticate with OneDrive (only needed once)
 auth-onedrive:
 	python backend/onedrive/interactive_onedrive_auth.py
-	
+
 backfill-embeddings:
 	venv/bin/python backend/scripts/backfill_embeddings.py
