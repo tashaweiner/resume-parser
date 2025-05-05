@@ -5,7 +5,7 @@ load_dotenv()
 from fastapi import APIRouter
 import psycopg2
 from pydantic import BaseModel
-from .search.searchParsed import search_and_rank
+from search.searchParsed import search_and_rank
 from fastapi import APIRouter, Query
 import os
 
