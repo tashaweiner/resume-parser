@@ -23,3 +23,4 @@ msal==1.27.0
 requests==2.31.0
 aiohttp
 asyncpg
+uvicorn
