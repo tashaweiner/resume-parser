@@ -4,7 +4,7 @@ import os
 import json
 from openai import OpenAI
 from time import sleep
-from ..dbconnection.load_resume_from_db import load_resume_from_db
+from dbconnection.load_resume_from_db import load_resume_from_db
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 

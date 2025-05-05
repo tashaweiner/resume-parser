@@ -1,9 +1,9 @@
 import os
 import psycopg2
 from dotenv import load_dotenv
-from ..models.candidate import Candidate
-from ..utils.embeddings import get_embedding
-from ..parser.flatten_candidate_for_embedding import flatten_candidate_for_embedding
+from models.candidate import Candidate
+from utils.embeddings import get_embedding
+from parser.flatten_candidate_for_embedding import flatten_candidate_for_embedding
 import json
 
 load_dotenv()
