@@ -2,11 +2,17 @@ import os
 import psycopg2
 from dotenv import load_dotenv
 import json
+from ..models.candidate import Candidate  # ✅ Adjusted to absolute import
+import re
 
 load_dotenv()
 
-def insert_parsed_resume(filename: str, parsed_data: dict):
-    """Insert a parsed resume into the resumes table in Postgres."""
+def extract_owner(filename: str) -> str | None:
+    match = re.search(r'\((\w{2})\)\.pdf$', filename)
+    return match.group(1) if match else None
+
+def insert_parsed_resume(filename: str, parsed_data: Candidate):
+    """Insert a parsed Candidate into the resumes table in Postgres."""
 
     conn = psycopg2.connect(
         host=os.getenv("POSTGRES_HOST"),
@@ -15,20 +21,22 @@ def insert_parsed_resume(filename: str, parsed_data: dict):
         user=os.getenv("POSTGRES_USER"),
         password=os.getenv("POSTGRES_PASSWORD")
     )
-
     cur = conn.cursor()
 
-    # Extract basic fields from parsed_data safely
-    name = parsed_data.get("name")
-    email = parsed_data.get("email")
-    phone = parsed_data.get("phone")
-    location = parsed_data.get("location")
-    skills = parsed_data.get("skills") or []
+    # Extract fields
+    name = parsed_data.name
+    email = parsed_data.email
+    phone = parsed_data.phone
+    location = parsed_data.location
+    skills = parsed_data.skills or []
+    embedding = parsed_data.embedding
+    owner = extract_owner(filename)
+    parsed_json = json.dumps(parsed_data.dict())
 
     # Insert into table
     cur.execute("""
-        INSERT INTO resumes (filename, name, email, phone, skills, location, parsed_json)
-        VALUES (%s, %s, %s, %s, %s, %s, %s)
+        INSERT INTO resumes (filename, name, email, phone, skills, location, parsed_json, embedding, owner)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
         ON CONFLICT (filename) DO NOTHING;
     """, (
         filename,
@@ -37,10 +45,13 @@ def insert_parsed_resume(filename: str, parsed_data: dict):
         phone,
         skills,
         location,
-        json.dumps(parsed_data)
+        parsed_json,
+        embedding,
+        owner
     ))
 
     conn.commit()
     cur.close()
     conn.close()
     print(f"✅ Inserted into DB: {filename}")
+  

@@ -1,9 +1,10 @@
 # file for Resume Parser App
 
 # Run backend FastAPI server
+# run-backend:
+# 	cd backend && PYTHONPATH=.. source venv/bin/activate && uvicorn main:app --reload
 run-backend:
-	cd backend && PYTHONPATH=.. source venv/bin/activate && uvicorn main:app --reload
-
+	venv/bin/python -m uvicorn backend.main:app --reload
 
 # Setup backend (runs setup.sh)
 setup-backend:
@@ -12,6 +13,7 @@ setup-backend:
 # Run React frontend
 run-frontend:
 	cd frontend && npm install && npm start
+
 
 # Run both backend and frontend (separate terminals recommended)
 dev:
@@ -25,3 +27,6 @@ fetch-resumes:
 # Authenticate with OneDrive (only needed once)
 auth-onedrive:
 	python backend/onedrive/interactive_onedrive_auth.py
+	
+backfill-embeddings:
+	venv/bin/python backend/scripts/backfill_embeddings.py
