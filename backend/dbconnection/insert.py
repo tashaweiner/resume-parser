@@ -2,9 +2,8 @@ import os
 import psycopg2
 from dotenv import load_dotenv
 import json
-from ..models.candidate import Candidate  # ✅ Adjusted to absolute import
+from  models.candidate import Candidate  # ✅ Adjusted to absolute import
 import re
-
 load_dotenv()
 
 def extract_owner(filename: str) -> str | None:

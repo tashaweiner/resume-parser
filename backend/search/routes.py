@@ -17,6 +17,7 @@ client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 class SearchRequest(BaseModel):
     prompt: str
     top_k: int = 25
+    owner: str | None = None  # 👈 add this line
 
 @router.post("/semantic")
 def semantic_search(request: SearchRequest):
@@ -31,13 +32,24 @@ def semantic_search(request: SearchRequest):
     )
     cur = conn.cursor()
 
-    cur.execute("""
+    base_query = """
         SELECT filename, name, email, parsed_json, embedding <-> %s::vector AS distance
         FROM resumes
         WHERE embedding IS NOT NULL
+    """
+    params = [embedding]
+
+    if request.owner:
+        base_query += " AND owner = %s"
+        params.append(request.owner)
+
+    base_query += """
         ORDER BY embedding <-> %s::vector
         LIMIT %s;
-    """, (embedding, embedding, request.top_k))
+    """
+    params.extend([embedding, request.top_k])
+
+    cur.execute(base_query, params)
 
     rows = cur.fetchall()
     cur.close()
@@ -53,6 +65,7 @@ def semantic_search(request: SearchRequest):
         }
         for row in rows
     ]
+
 
 @router.post("/gpt-score")
 def gpt_score(request: SearchRequest, resumes: list[dict]):
