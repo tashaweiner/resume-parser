@@ -3,12 +3,12 @@ import asyncio
 import aiohttp
 import asyncpg
 from dotenv import load_dotenv
-from ..onedrive.interactive_onedrive_auth import get_access_token
-from ..parser.parse_resumes import parse_resume_pdf_bytes
-from ..models.candidate import Candidate
-from ..parser.flatten_candidate_for_embedding import flatten_candidate_for_embedding
-from ..utils.embeddings import get_embedding
-from ..dbconnection.insert import insert_parsed_resume
+from onedrive.interactive_onedrive_auth import get_access_token
+from parser.parse_resumes import parse_resume_pdf_bytes
+from models.candidate import Candidate
+from parser.flatten_candidate_for_embedding import flatten_candidate_for_embedding
+from utils.embeddings import get_embedding
+from dbconnection.insert import insert_parsed_resume
 
 load_dotenv()
 

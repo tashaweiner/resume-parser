@@ -6,9 +6,9 @@ import psycopg2
 import json
 import re
 
-from ..utils.embeddings import get_embedding
-from ..parser.flatten_candidate_for_embedding import flatten_candidate_for_embedding
-from ..models.candidate import Candidate
+from utils.embeddings import get_embedding
+from parser.flatten_candidate_for_embedding import flatten_candidate_for_embedding
+from models.candidate import Candidate
 
 router = APIRouter()
 
