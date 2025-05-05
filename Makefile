@@ -14,6 +14,7 @@ setup-backend:
 run-frontend:
 	cd frontend && npm install && npm start
 
+
 # Run both backend and frontend (separate terminals recommended)
 dev:
 	@echo "👉 In one terminal, run:  run-backend"
@@ -26,3 +27,6 @@ fetch-resumes:
 # Authenticate with OneDrive (only needed once)
 auth-onedrive:
 	python backend/onedrive/interactive_onedrive_auth.py
+	
+backfill-embeddings:
+	venv/bin/python backend/scripts/backfill_embeddings.py

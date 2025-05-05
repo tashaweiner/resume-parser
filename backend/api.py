@@ -15,11 +15,11 @@ OUTPUT_DIR = os.path.join(BASE_DIR, "output")
 class SearchRequest(BaseModel):
     question: str
 
-@router.get("/search")
-def search(query: str = Query(...)):
-    results = search_and_rank(query)
-    top_50 = sorted(results, key=lambda x: int(x["score"]), reverse=True)[:50]
-    return {"results": top_50}
+# @router.get("/search")
+# def search(query: str = Query(...)):
+#     results = search_and_rank(query)
+#     top_50 = sorted(results, key=lambda x: int(x["score"]), reverse=True)[:50]
+#     return {"results": top_50}
 
 @router.get("/resumes")
 def get_all_resumes():

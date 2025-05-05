@@ -25,9 +25,12 @@ function App() {
     setCurrentPage(1);
 
     axios
-      .get(`${API_URL}/search?query=${encodeURIComponent(searchQuery)}`)
+      .post(`${API_URL}/search/full`, {
+        prompt: searchQuery,
+        top_k: 25
+      })
       .then(res => {
-        setResults(res.data.results);
+        setResults(res.data.results); // backend returns { results: [...] }
       })
       .catch(err => {
         console.error("Error during search:", err);
@@ -60,10 +63,11 @@ function App() {
         <>
           <h2>🔍 Search Results (Showing {paginatedResults.length} of {results.length})</h2>
           {paginatedResults.map((r, i) => (
-            <div key={i} className="card" style={{ marginBottom: "1rem" }}>
-              <h3>{r.filename}</h3>
-              <p>Score: {r.score}/10</p>
-              <p><strong>Reason:</strong> {r.reason}</p>
+            <div key={i} className="card" style={{ marginBottom: "1rem", padding: "1rem", border: "1px solid #ddd", borderRadius: "8px" }}>
+              <h3>{r.name || "Unnamed Candidate"}</h3>
+              <p><strong>Filename:</strong> {r.filename}</p>
+              <p><strong>Score:</strong> {r.score !== null && r.score !== undefined ? `${r.score}/10` : "Not scored"}</p>
+              <p><strong>Reason:</strong> {r.reason || "N/A"}</p>
             </div>
           ))}
 

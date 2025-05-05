@@ -4,6 +4,8 @@ from ..dbconnection.check_if_exists import is_resume_already_in_db
 from .interactive_onedrive_auth import get_access_token
 from ..parser.parse_resumes import parse_resume_pdf_bytes
 from ..models.candidate import Candidate  # ✅ Import your Pydantic model
+from ..parser.flatten_candidate_for_embedding import flatten_candidate_for_embedding
+from ..utils.embeddings import get_embedding
 
 def download_and_parse_resumes():
     access_token = get_access_token()
@@ -39,8 +41,17 @@ def download_and_parse_resumes():
         parsed_candidate_data = parse_resume_pdf_bytes(file_bytes)
 
         if isinstance(parsed_candidate_data, Candidate):
+            print(f"📝 Parsed: {filename}")
+
+            # Flatten the candidate data for embedding
+            flattened_text = flatten_candidate_for_embedding(parsed_candidate_data)
+            print(f"🔍 Flattened text: {flattened_text}")
+
+            #get the embedding
+            parsed_candidate_data.embedding = get_embedding(flattened_text)
             insert_parsed_resume(filename, parsed_candidate_data)
             print(f"✅ Inserted: {filename}")
+            
         else:
             print(f"❌ Failed to parse: {filename}")
             print("Details:", parsed_candidate_data.get("details"))

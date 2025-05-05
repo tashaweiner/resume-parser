@@ -1,12 +1,13 @@
 from pydantic import BaseModel
 from typing import List, Optional
+from typing import Union
 
 class ExperienceItem(BaseModel):
     title: str
     company: str
     location: Optional[str] = ""
     dates: Optional[str] = ""
-    responsibilities: Optional[str] = ""
+    responsibilities: Union[str, list[str]]
 
 class EducationItem(BaseModel):
     school: str
@@ -20,7 +21,7 @@ class Candidate(BaseModel):
     phone: Optional[str] = ""
     location: Optional[str] = ""
     skills: List[str] = []
-    certifications: List[str] = []
+    certifications: Union[list[Union[str, dict]], None] = []
     experience: List[ExperienceItem] = []
     education: List[EducationItem] = []
     embedding: Optional[List[float]] = None
