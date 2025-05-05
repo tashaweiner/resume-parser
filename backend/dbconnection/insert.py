@@ -2,11 +2,12 @@ import os
 import psycopg2
 from dotenv import load_dotenv
 import json
+from ..models.candidate import Candidate  # ✅ Adjusted to absolute import
 
 load_dotenv()
 
-def insert_parsed_resume(filename: str, parsed_data: dict):
-    """Insert a parsed resume into the resumes table in Postgres."""
+def insert_parsed_resume(filename: str, candidate_data: Candidate):
+    """Insert a parsed Candidate into the resumes table in Postgres."""
 
     conn = psycopg2.connect(
         host=os.getenv("POSTGRES_HOST"),
@@ -15,15 +16,17 @@ def insert_parsed_resume(filename: str, parsed_data: dict):
         user=os.getenv("POSTGRES_USER"),
         password=os.getenv("POSTGRES_PASSWORD")
     )
-
     cur = conn.cursor()
 
-    # Extract basic fields from parsed_data safely
-    name = parsed_data.get("name")
-    email = parsed_data.get("email")
-    phone = parsed_data.get("phone")
-    location = parsed_data.get("location")
-    skills = parsed_data.get("skills") or []
+    # Extract key fields
+    name = candidate_data.name
+    email = candidate_data.email
+    phone = candidate_data.phone
+    location = candidate_data.location
+    skills = candidate_data.skills or []
+
+    # Convert full Candidate object to JSON for storage
+    parsed_json = json.dumps(candidate_data.dict())
 
     # Insert into table
     cur.execute("""
@@ -37,7 +40,7 @@ def insert_parsed_resume(filename: str, parsed_data: dict):
         phone,
         skills,
         location,
-        json.dumps(parsed_data)
+        parsed_json
     ))
 
     conn.commit()

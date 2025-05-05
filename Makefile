@@ -1,9 +1,10 @@
 # file for Resume Parser App
 
 # Run backend FastAPI server
+# run-backend:
+# 	cd backend && PYTHONPATH=.. source venv/bin/activate && uvicorn main:app --reload
 run-backend:
-	cd backend && PYTHONPATH=.. source venv/bin/activate && uvicorn main:app --reload
-
+	venv/bin/python -m uvicorn backend.main:app --reload
 
 # Setup backend (runs setup.sh)
 setup-backend:
