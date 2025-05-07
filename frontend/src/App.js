@@ -60,27 +60,37 @@ function App() {
     <div style={{ padding: "2rem", maxWidth: "800px", margin: "0 auto" }}>
       <h1>Resume Search</h1>
 
-      <div style={{ marginBottom: "1rem", display: "flex", gap: "0.5rem" }}>
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="e.g. banking"
-          style={{ padding: "0.5rem", width: "300px" }}
-        />
-        <select
-          value={owner}
-          onChange={(e) => setOwner(e.target.value)}
-          style={{ padding: "0.5rem" }}
-        >
-          <option value="all">All Candidates</option>
-          {ownerOptions.map((opt) => (
-            <option key={opt} value={opt}>
-              {opt}
-            </option>
-          ))}
-        </select>
-        <button onClick={handleSearch}>Search</button>
+      <div style={{ marginBottom: "1rem", display: "flex", gap: "1rem", alignItems: "flex-end" }}>
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          <label style={{ color: "#888", fontSize: "0.9rem", marginBottom: "0.2rem" }}>Search Prompt</label>
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="e.g. banking"
+            style={{ padding: "0.5rem", width: "300px" }}
+          />
+        </div>
+
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          <label style={{ color: "#888", fontSize: "0.9rem", marginBottom: "0.2rem" }}>Owner</label>
+          <select
+            value={owner}
+            onChange={(e) => setOwner(e.target.value)}
+            style={{ padding: "0.5rem", width: "150px" }}
+          >
+            <option value="all">All Candidates</option>
+            {ownerOptions.map((opt) => (
+              <option key={opt} value={opt}>
+                {opt}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <button style={{ padding: "0.5rem 1rem", height: "fit-content" }} onClick={handleSearch}>
+          Search
+        </button>
       </div>
 
       {loading && <p>Loading...</p>}
@@ -89,8 +99,7 @@ function App() {
       {results.length > 0 && (
         <>
           <h2>
-            🔍 Search Results (Showing {paginatedResults.length} of{" "}
-            {results.length})
+            🔍 Search Results (Showing {paginatedResults.length} of {results.length})
           </h2>
           {paginatedResults.map((r, i) => (
             <div
@@ -104,18 +113,9 @@ function App() {
               }}
             >
               <h3>{r.name || "Unnamed Candidate"}</h3>
-              <p>
-                <strong>Filename:</strong> {r.filename}
-              </p>
-              <p>
-                <strong>Score:</strong>{" "}
-                {r.score !== null && r.score !== undefined
-                  ? `${r.score}/10`
-                  : "Not scored"}
-              </p>
-              <p>
-                <strong>Reason:</strong> {r.reason || "N/A"}
-              </p>
+              <p><strong>Filename:</strong> {r.filename}</p>
+              <p><strong>Score:</strong> {r.score !== null && r.score !== undefined ? `${r.score}/10` : "Not scored"}</p>
+              <p><strong>Reason:</strong> {r.reason || "N/A"}</p>
             </div>
           ))}
 
