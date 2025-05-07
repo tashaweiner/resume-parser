@@ -1,6 +1,6 @@
 from .extract_text import extract_text_from_pdf_bytes
 from .generate_json import convert_text_to_structured_json
-from ..models.candidate import Candidate
+from models.candidate import Candidate
 from pydantic import ValidationError
 
 def parse_resume_pdf_bytes(file_bytes: bytes):

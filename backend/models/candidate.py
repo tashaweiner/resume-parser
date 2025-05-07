@@ -26,3 +26,8 @@ class Candidate(BaseModel):
     education: List[EducationItem] = []
     embedding: Optional[List[float]] = None
     source_file: Optional[str] = ""
+
+class SearchRequest(BaseModel):
+    prompt: str
+    top_k: int = 25
+    owner: str | None = None  # 👈 add this line
